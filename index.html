@@ -429,7 +429,7 @@ footer span {
     <div class="stack" id="stack">
     <div class="card" id="result" aria-live="polite">
       <div class="card-stamp" id="card-stamp" aria-hidden="true">Admitted</div>
-      <p class="kicker caps" id="result-title">You&rsquo;re on the bill!</p>
+      <p class="kicker caps" id="result-title">Your seat is saved!</p>
       <p class="who" id="result-name"></p>
       <p class="msg" id="result-text"></p>
       <p class="ticketno" id="result-no"></p>
@@ -441,7 +441,7 @@ footer span {
         <div class="strip" aria-hidden="true"></div>
         <p class="admit">Admit One</p>
         <div class="namefield">
-          <label for="guest-name">Your stage name</label>
+          <label for="guest-name">Your name</label>
           <div class="write">
             <input id="guest-name" maxlength="40" autocomplete="name" placeholder="e.g. The Bearded Lady" aria-describedby="needname">
             <span class="ghost" id="ghost" aria-hidden="true"></span>
@@ -529,11 +529,11 @@ footer span {
     if (!rec) stack.classList.remove("revealing");
     decline.hidden = !!rec; $("hint").hidden = !!rec;
     if (!rec) return;
-    $("result-title").textContent = yes ? "You\u2019re on the bill!" : "Maybe next time";
+    $("result-title").textContent = yes ? "Your seat is saved!" : "Maybe next time";
     $("card-stamp").textContent = yes ? "Admitted" : "Ghost seat";
     $("result-name").textContent = rec.name || "Mysterious guest";
     $("result-text").textContent = yes
-      ? "Your stub is with the ringmaster. See you on Saturday, November 7 from 7 PM in Bostanl\u0131, in costume and with a bottle in hand."
+      ? "Your stub is with the ringmaster and a front-row seat has your name on it. The show starts Saturday, November 7 from 7 PM in Bostanl\u0131. Come in costume, with a bottle in hand."
       : "We\u2019ll save your seat for a ghost. If plans change, come back and grab your ticket.";
     $("result-no").textContent = yes ? `Ticket No. ${serialFor(rec)} \u00b7 valid till sunrise` : "";
     $("result-note").textContent = rec.local
