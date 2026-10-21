@@ -191,6 +191,8 @@ body::after {
 /* ---------- ticket ---------- */
 .box { display: grid; gap: 18px; justify-items: center; }
 .box h2 { margin: 0; font-size: clamp(34px, 6vw, 52px); text-align: center; }
+.hint, #decline { transition: opacity .4s; }
+.box.answered .hint, .box.answered #decline { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .4s, visibility 0s .4s; }
 .hint { margin: 0; text-align: center; background: var(--cream); padding: 4px 14px; font-style: italic; font-size: 16px; color: var(--navy); }
 
 .ticket {
@@ -328,7 +330,7 @@ body::after {
   position: absolute; right: 26px; top: 26px;
   font-family: var(--display); text-transform: uppercase; font-size: 18px; line-height: 1.05; text-align: center;
   color: var(--red); border: 3px double var(--red); padding: 5px 10px; border-radius: 6px;
-  transform: rotate(-12deg); opacity: .9; mix-blend-mode: multiply; pointer-events: none;
+  transform: rotate(-12deg); opacity: 0; mix-blend-mode: multiply; pointer-events: none;
 }
 .stack.revealed .card-stamp { animation: stamp .55s .15s cubic-bezier(.3,1.5,.5,1) both; }
 .ticket.falling::before { opacity: 0; transition: opacity .3s; }
@@ -554,7 +556,7 @@ footer span {
     nameInput.parentElement.parentElement.classList.toggle("filled", !!nameInput.value);
     stack.classList.toggle("revealed", !!rec);
     if (!rec) stack.classList.remove("revealing");
-    decline.hidden = !!rec; $("hint").hidden = !!rec;
+    stack.parentElement.classList.toggle("answered", !!rec || stack.classList.contains("revealing"));
     if (rec) fillCard(rec);
   }
 
@@ -608,7 +610,7 @@ footer span {
   async function tear() {
     if (mine || needName()) return;
     nameInput.blur(); nameInput.disabled = true;
-    stack.classList.add("revealing");
+    stack.classList.add("revealing"); stack.parentElement.classList.add("answered");
     const finish = startSave("yes");
     if (reduce) return finish();
     const v = vertical();
@@ -639,7 +641,7 @@ footer span {
   async function declineTicket() {
     if (mine || needName()) return;
     nameInput.blur(); nameInput.disabled = true;
-    stack.classList.add("revealing");
+    stack.classList.add("revealing"); stack.parentElement.classList.add("answered");
     const finish = startSave("no");
     if (!reduce) {
       ticket.classList.add("falling");
