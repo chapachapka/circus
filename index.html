@@ -151,6 +151,11 @@ body::after {
   text-shadow: 0 .02em 0 #f2cf72, 0 .04em .06em rgba(90,30,0,.35);
   padding: 0 .3em; pointer-events: none;
 }
+.plaque .slogan { /* printed in the same slate ink the sign used */
+  position: absolute; left: 50%; top: 71.6%; transform: translate(-50%, -50%);
+  font: italic 400 2.05cqw/1.32 var(--body); color: #3f5a63; text-align: center; white-space: nowrap;
+  pointer-events: none;
+}
 .plaque.boing .nastya { animation: hop .6s cubic-bezier(.3,1.6,.5,1); }
 @keyframes hop { 30% { transform: translate(-50%, -75%); } 60% { transform: translate(-50%, -45%); } }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -409,10 +414,11 @@ footer span {
     <div class="plaque" id="plaque">
       <img src="img/plaque.webp" width="1134" height="597" alt="">
       <span class="nastya">Nastya&rsquo;s</span>
+      <span class="slogan">Halloween party:<br>the nastiest show in town</span>
     </div>
   </div>
   <h1 class="sr-only">Nastya&rsquo;s Circus</h1>
-  <p class="sr-only">There&rsquo;s no circus quite as nasty as the circus run by Nastya</p>
+  <p class="sr-only">Halloween party: the nastiest show in town</p>
 </header>
 
 <main class="wrap">
