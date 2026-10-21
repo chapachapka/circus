@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nastya's Circus</title>
+<meta name="description" content="Psst… your favourite clown is calling you. Nastya's Circus, Saturday 7 November, Bostanlı. Costume required, bring a bottle.">
+<meta property="og:title" content="Nastya's Circus">
+<meta property="og:description" content="Psst… your favourite clown is calling you. Nastya's Circus, Saturday 7 November, Bostanlı. Costume required, bring a bottle.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#cf5f78">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sancreek&family=Great+Vibes&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: a full-screen pair of closed pink velvet curtains holds the whispered intro, then parts after four seconds onto a red-and-pink sunburst with a cream bracket label; below, a navy playbill, a tear-off ticket on blue harlequin, and a checkerboard floor. */
+:root {
+  --cream: #f8ecd9;        /* label, ticket stock */
+  --red: #c8242b;          /* cherry red */
+  --red-deep: #8e1419;
+  --pink: #f2a3af;
+  --blush: #f7cfd5;
+  --velvet: #cf5f78;       /* pink velvet */
+  --velvet-dark: #7f2440;
+  --velvet-light: #f1a5b5;
+  --sky: #688492;          /* harlequin blue (velvet) */
+  --navy: #1f2b57;
+  --gold: #d9a53a;
+  --gold-light: #f6dc8c;
+  --ink: #2b1d17;
+  --display: "Sancreek", "Rockwell", Georgia, serif;           /* circus caps */
+  --script: "Great Vibes", "Snell Roundhand", cursive;        /* the whisper */
+  --body: "Libre Baskerville", "Baskerville", Georgia, serif;  /* the one text face */
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--cream); }
+html.intro-on { overflow: hidden; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 18px;
+  line-height: 1.6;
+  background-color: transparent; /* the cream lives on html so the drifting tile layer shows through */
+  overflow-x: hidden;
+}
+/* velvet harlequin, matched to the backdrop's dusty blue and cream; drifts left very slowly */
+body::before {
+  content: ""; position: fixed; top: 0; bottom: 0; left: 0; right: -160px; z-index: -1;
+  background: url("img/velvet-harlequin.webp") 0 0 / 160px 224px;
+  animation: drift 48s linear infinite;
+  will-change: transform;
+}
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 90% 70% at 50% 30%, transparent 55%, rgba(30,40,48,.22));
+}
+@keyframes drift { to { transform: translateX(-160px); } }
+.caps {
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  color: var(--red);
+  -webkit-text-stroke: 3px var(--navy); paint-order: stroke fill;
+  text-shadow: 3px 3px 0 var(--navy);
+  letter-spacing: .03em;
+}
+
+/* ---------- intro curtains ---------- */
+.intro { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh; z-index: 50; overflow: hidden; cursor: pointer; }
+.drape {
+  position: absolute; top: 0; bottom: 0; width: 50.5%; overflow: hidden;
+  background: var(--velvet);
+  transition: transform 3.4s cubic-bezier(.6,.02,.3,1) .7s;
+  will-change: transform;
+}
+.drape::before { /* one photo spread across both halves, so the seam lines up */
+  content: ""; position: absolute; top: 0; bottom: 0; width: 100vw;
+  background: url("img/curtain.webp") center top / cover no-repeat;
+}
+.drape.l { left: 0; transform-origin: 0 50%; }
+.drape.r { right: 0; transform-origin: 100% 50%; }
+.drape.l::before { left: 0; }
+.drape.r::before { right: 0; }
+.drape.l { box-shadow: 8px 0 18px rgba(60,10,25,.35); }
+.drape.r { box-shadow: -8px 0 18px rgba(60,10,25,.35); }
+.whisper { /* pinned to the exact middle of the visible screen */
+  position: absolute; left: 50%; top: 50%; z-index: 1;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  display: grid; justify-items: center; gap: 6px; text-align: center;
+  padding-block: 12vh;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+  color: var(--cream);
+  background: radial-gradient(ellipse 55% 50% at 50% 50%, rgba(60,6,20,.62), transparent 78%);
+  text-shadow: 0 2px 2px rgba(60,8,22,.8), 0 0 24px rgba(60,8,22,.6);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.whisper .psst, .whisper .line {
+  font-family: var(--script); font-weight: 400; text-transform: none;
+  color: #e9c35c;
+  background: linear-gradient(175deg, #f6d46e 0%, #e7b440 40%, #f2c95c 65%, #d39d31 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+.whisper .psst, .whisper .line { font-size: clamp(54px, 9.5vw, 104px); line-height: 1.1; }
+.whisper .psst { padding: 0 .35em; }
+.whisper .line { max-width: 9em; padding: 0 .35em .2em; }
+.whisper .gild { display: grid; justify-items: center; filter: drop-shadow(0 2px 0 #6b3f0c) drop-shadow(0 0 2px rgba(60,8,22,.6)) drop-shadow(0 8px 14px rgba(50,5,18,.7)); }
+.intro.open { pointer-events: none; }
+.intro.open .drape.l { transform: translateX(-100%) scaleX(.82); }
+.intro.open .drape.r { transform: translateX(100%) scaleX(.82); }
+.intro.open .whisper { opacity: 0; transform: translate(-50%, calc(-50% - 14px)); }
+
+/* ---------- poster: Nastya's backdrop split into layers (rays turn, sign sways) ----------
+   Everything is placed on a 2000x1100 artboard with the sign centred; on phones the artboard is cropped to its middle 1200. */
+.poster { position: relative; aspect-ratio: 2000 / 1100; overflow: hidden; background: #b9504f; }
+.artboard { position: absolute; top: 0; left: 0; width: 100%; height: 100%; container-type: inline-size; }
+@media (max-width: 700px) {
+  .poster { aspect-ratio: 1200 / 1100; }
+  .artboard { width: 166.667%; left: -33.333%; }
+}
+.rays {
+  position: absolute; left: -10%; top: -59.09%; width: 120%; aspect-ratio: 1;
+  background: url("img/rays.webp") center / cover;
+  animation: spin 120s linear infinite;
+  will-change: transform;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.shade { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 50% 50%, transparent 45%, rgba(70,10,20,.35)); }
+.plaque {
+  position: absolute; left: 21.6%; top: 22.86%; width: 56.7%;
+  transform-origin: 50% -60%;
+  animation: sway 5.5s ease-in-out infinite;
+  filter: drop-shadow(0 1cqw 1.2cqw rgba(60,10,20,.45));
+  cursor: pointer;
+}
+.plaque img { display: block; width: 100%; height: auto; }
+@keyframes sway { 0%, 100% { transform: rotate(-1.3deg); } 50% { transform: rotate(1.3deg); } }
+.plaque.boing img { animation: boing .6s cubic-bezier(.3,1.6,.5,1); }
+@keyframes boing { 0% { transform: scale(1); } 25% { transform: scale(1.06, .92); } 50% { transform: scale(.96, 1.05); } 75% { transform: scale(1.02, .98); } 100% { transform: scale(1); } }
+.plaque .nastya {
+  position: absolute; left: 50.1%; top: 18.6%; transform: translate(-50%, -50%);
+  font-family: var(--script); font-size: 6.2cqw; line-height: 1; white-space: nowrap;
+  color: #a3161d;
+  text-shadow: 0 .02em 0 #f2cf72, 0 .04em .06em rgba(90,30,0,.35);
+  padding: 0 .3em; pointer-events: none;
+}
+.plaque.boing .nastya { animation: hop .6s cubic-bezier(.3,1.6,.5,1); }
+@keyframes hop { 30% { transform: translate(-50%, -75%); } 60% { transform: translate(-50%, -45%); } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- playbill ---------- */
+.wrap {
+  max-width: 920px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 72px;
+  display: grid; gap: 56px;
+}
+.bill {
+  display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+  background: var(--navy); color: var(--cream);
+  box-shadow: 0 0 0 4px var(--cream), 0 0 0 7px var(--navy);
+  background-image: radial-gradient(circle, rgba(232,178,58,.35) 1.2px, transparent 1.6px);
+  background-size: 26px 26px;
+}
+.bill div { padding: 24px 16px; display: grid; gap: 6px; align-content: start; text-align: center; }
+.bill .k { display: inline-block; transition: transform .35s cubic-bezier(.3,1.8,.5,1); }
+.bill div:hover .k { transform: translateY(-6px) scale(1.08); }
+.bill div + div { border-left: 2px dashed rgba(246,231,204,.35); }
+.bill .k { font-family: var(--display); text-transform: uppercase; color: var(--gold); font-size: 22px; letter-spacing: .06em; }
+.bill .v { font-family: var(--body); font-style: italic; font-size: 16px; line-height: 1.4; }
+.bill .v strong { font-style: normal; font-weight: 700; display: block; font-size: 19px; }
+
+/* ---------- ticket ---------- */
+.box { display: grid; gap: 18px; justify-items: center; }
+.box h2 { margin: 0; font-size: clamp(34px, 6vw, 52px); text-align: center; }
+.hint { margin: 0; text-align: center; background: var(--cream); padding: 4px 14px; font-style: italic; font-size: 16px; color: var(--navy); }
+
+.ticket {
+  --notch: 14px;
+  display: grid; grid-template-columns: minmax(0,1fr) 190px;
+  width: 100%; max-width: 680px;
+  user-select: none;
+}
+.main, .stub {
+  position: relative;
+  background: url("img/paper.webp") 0 0 / 200px 200px, var(--cream);
+  background-blend-mode: multiply;
+}
+.main { box-shadow: inset 0 0 36px rgba(150,100,45,.22), inset 0 0 4px rgba(150,100,45,.25); }
+.ticket { position: relative; isolation: isolate; }
+.ticket::before { /* soft paper shadow, drawn once, so the tear stays smooth */
+  content: ""; position: absolute; inset: 10px 6px -8px; z-index: -1;
+  background: rgba(30,25,35,.38); filter: blur(12px); border-radius: 4px;
+}
+.ticket.torn::before { right: 186px; }
+.main {
+  padding: 0 clamp(28px, 5vw, 48px) clamp(32px, 4vw, 44px);
+  display: grid; gap: 26px; align-content: start;
+  grid-template-rows: auto 1fr auto; /* strip, title, name line sits low with air above */
+  -webkit-mask: radial-gradient(circle var(--notch) at 0 50%, #0000 98%, #000);
+  mask: radial-gradient(circle var(--notch) at 0 50%, #0000 98%, #000);
+  border-right: 3px dotted var(--navy);
+}
+.main::before { content: ""; position: absolute; inset: 34px 12px 12px; border: 2px solid var(--red); pointer-events: none; }
+.strip {
+  margin: 0 calc(-1 * clamp(28px, 5vw, 48px)); height: 22px;
+  background-color: var(--red);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Cpath d='M11 0L22 11L11 22L0 11Z' fill='%23f2a3af'/%3E%3C/svg%3E");
+  background-size: 22px 22px;
+}
+.admit { margin: 18px 0 0; font-family: var(--display); text-transform: uppercase; font-size: clamp(28px, 5vw, 42px); line-height: 1; color: var(--red); }
+.namefield { display: grid; gap: 8px; }
+.namefield label { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--navy); }
+.namefield input { /* a printed write-in line; the name goes on it in ink script */
+  font: 400 clamp(30px, 4.4vw, 38px)/1.2 var(--script); color: var(--navy);
+  background: linear-gradient(transparent 55%, rgba(200,36,43,.05));
+  border: 0; border-bottom: 4px double var(--navy); border-radius: 0;
+  padding: 2px 4px 0; width: 100%; outline: none; user-select: text;
+  transition: border-color .2s, background .2s;
+}
+.namefield input:focus-visible { border-bottom-color: var(--red); background: linear-gradient(transparent 40%, rgba(200,36,43,.09)); }
+.needname { font-style: italic; font-size: 15px; color: var(--red); }
+.namefield.missing input { border-bottom-color: var(--red); background: linear-gradient(transparent 40%, rgba(200,36,43,.12)); }
+.namefield input::placeholder { color: transparent; }
+.write { position: relative; }
+.ghost {
+  position: absolute; left: 0; right: 0; bottom: 4px; padding: 2px 4px 0;
+  font: 400 clamp(30px, 4.4vw, 38px)/1.2 var(--script); color: rgba(31,43,87,.38);
+  white-space: nowrap; overflow: hidden; pointer-events: none;
+}
+.namefield.filled .ghost { display: none; }
+.namefield:not(.filled) input { animation: beckon 2.4s ease-in-out infinite; }
+@keyframes beckon { 50% { border-bottom-color: var(--red); background: linear-gradient(transparent 45%, rgba(200,36,43,.10)); } }
+/* the fine print: quiet, so the name box leads */
+.row { display: flex; flex-wrap: wrap; gap: 8px 36px; font-size: 15px; color: #6f5d4c; padding-top: 4px; border-top: 1px dashed rgba(111,93,76,.4); padding-top: 18px; }
+.row span b { display: block; font-weight: 400; font-size: 10px; text-transform: uppercase; letter-spacing: .18em; color: #9a8672; margin-bottom: 2px; }
+.serial { color: #9a8672; font-size: 10px; text-transform: uppercase; letter-spacing: .2em; margin-top: -8px; }
+
+.stub {
+  padding: 22px 14px; display: grid; place-content: center; text-align: center; gap: 6px;
+  background-color: var(--red); color: var(--cream);
+  box-shadow: inset 0 0 30px rgba(70,5,10,.3);
+  cursor: pointer;
+  -webkit-mask: radial-gradient(circle var(--notch) at 100% 50%, #0000 98%, #000);
+  mask: radial-gradient(circle var(--notch) at 100% 50%, #0000 98%, #000);
+  transform-origin: 0 0;
+  z-index: 5;
+  will-change: transform, opacity;
+}
+.stub:hover { background-color: #d42e35; }
+.stub:hover .big { animation: wiggle .5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes wiggle { 25% { transform: rotate(-8deg) scale(1.1); } 60% { transform: rotate(5deg) scale(.97); } }
+.sparkle { position: fixed; z-index: 60; pointer-events: none; color: #f2c548; font-size: 26px; line-height: 1; text-shadow: 0 2px 0 #9c6b14; }
+.stub:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.stub .big { font-family: var(--display); text-transform: uppercase; font-size: 30px; line-height: 1; color: var(--gold-light); }
+.stub .small { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; }
+.stub .arrow { font-size: 22px; color: var(--gold-light); animation: nudge 1.6s infinite; }
+@keyframes nudge { 0%,100% { transform: translateX(0) } 50% { transform: translateX(7px) } }
+.stub.gone { visibility: hidden; }
+.stub .narrow { display: none; }
+@media (max-width: 600px) { .stub .wide { display: none; } .stub .narrow { display: inline; } }
+
+.shake { animation: shake .45s; }
+@keyframes shake { 20%,60% { transform: translateX(-7px) } 40%,80% { transform: translateX(7px) } }
+
+.stamp {
+  position: absolute; right: 22px; top: 46px;
+  font-family: var(--display); text-transform: uppercase; font-size: 21px; line-height: 1.05; text-align: center;
+  color: var(--red); border: 3px double var(--red); padding: 6px 12px; border-radius: 6px;
+  transform: rotate(-12deg) scale(1.25); opacity: 0; pointer-events: none;
+  mix-blend-mode: multiply;
+}
+.ticket.torn .stamp { animation: stamp .55s .1s cubic-bezier(.3,1.5,.5,1) forwards; }
+@keyframes stamp {
+  0% { opacity: 0; transform: rotate(-12deg) scale(1.8); }
+  45% { opacity: .9; transform: rotate(-12deg) scale(.88, 1.12); }
+  70% { transform: rotate(-12deg) scale(1.06, .95); }
+  100% { opacity: .9; transform: rotate(-12deg) scale(1); }
+}
+.ticket.torn .main { border-right-color: transparent; }
+.ticket.torn .main::after {
+  content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 8px;
+  background: var(--sky);
+  clip-path: polygon(100% 0,0 2%,70% 5%,10% 9%,80% 13%,20% 18%,90% 22%,0 27%,60% 31%,10% 36%,100% 40%,30% 45%,80% 49%,0 54%,70% 58%,20% 63%,100% 67%,10% 72%,60% 76%,0 81%,90% 85%,30% 90%,70% 95%,10% 100%,100% 100%);
+}
+
+/* ---------- the card that lies under the ticket ---------- */
+.stack { display: grid; width: 100%; max-width: 680px; }
+.stack > .card, .stack > .ticket { grid-area: 1 / 1; }
+.stack > .ticket { z-index: 2; }
+.card {
+  position: relative; z-index: 1; visibility: hidden;
+  display: grid; align-content: center; justify-items: center; gap: 10px; text-align: center;
+  padding: clamp(32px, 5vw, 48px) clamp(24px, 6vw, 64px);
+  background: url("img/paper.webp") 0 0 / 200px 200px, var(--cream);
+  background-blend-mode: multiply;
+  box-shadow: inset 0 0 36px rgba(150,100,45,.22), 0 10px 22px rgba(30,25,35,.3);
+  outline: 2px solid var(--red); outline-offset: -14px;
+}
+.stack.revealing .card, .stack.revealed .card { visibility: visible; }
+.stack.revealed .ticket { visibility: hidden; }
+.card p { margin: 0; }
+.card .kicker { font-size: clamp(26px, 4.6vw, 38px); line-height: 1; -webkit-text-stroke-width: 2px; text-shadow: 2px 2px 0 var(--navy); }
+.card .who { font-family: var(--script); font-size: clamp(38px, 6vw, 54px); line-height: 1.1; color: var(--navy); }
+.card .msg { max-width: 30em; font-size: 16px; line-height: 1.55; }
+.card .note { color: #8a7563; font-style: italic; font-size: 13px; }
+.card .ticketno { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #9a8672; }
+.card .linkish { background: none; }
+.card-stamp {
+  position: absolute; right: 26px; top: 26px;
+  font-family: var(--display); text-transform: uppercase; font-size: 18px; line-height: 1.05; text-align: center;
+  color: var(--red); border: 3px double var(--red); padding: 5px 10px; border-radius: 6px;
+  transform: rotate(-12deg); opacity: .9; mix-blend-mode: multiply; pointer-events: none;
+}
+.stack.revealed .card-stamp { animation: stamp .55s .15s cubic-bezier(.3,1.5,.5,1) both; }
+.ticket.falling::before { opacity: 0; transition: opacity .3s; }
+.linkish {
+  background: var(--cream); border: 0; padding: 4px 10px; color: var(--navy); font: italic 16px var(--body);
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.linkish:hover { color: var(--red); }
+.linkish:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+/* ---------- footer ---------- */
+footer {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 8px 48px;
+  text-align: center;
+}
+footer span {
+  display: inline-block; padding: 6px 16px; background: var(--cream);
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: var(--navy);
+}
+
+@media (max-width: 760px) {
+  .bill { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .bill div:nth-child(3) { border-left: 0; }
+  .bill div:nth-child(n+3) { border-top: 2px dashed rgba(246,231,204,.35); }
+}
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .wrap { gap: 36px; padding-block: 28px 56px; }
+  /* playbill: compact 2x2 */
+  .bill div { padding: 16px 8px; gap: 2px; }
+  .bill .k { font-size: 17px; }
+  .bill .v { font-size: 13px; }
+  .bill .v strong { font-size: 17px; }
+  .hint { font-size: 14px; padding: 4px 10px; }
+  /* ticket stands upright: stub at the bottom, notches at both ends of the perforation */
+  .ticket { grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(0,1fr) 112px; }
+  .main {
+    border-right: 0; border-bottom: 3px dotted var(--navy);
+    padding-bottom: 32px; gap: 20px;
+    -webkit-mask: radial-gradient(circle var(--notch) at 0 100%, #0000 98%, #000) left / 51% 100% no-repeat,
+                  radial-gradient(circle var(--notch) at 100% 100%, #0000 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle var(--notch) at 0 100%, #0000 98%, #000) left / 51% 100% no-repeat,
+          radial-gradient(circle var(--notch) at 100% 100%, #0000 98%, #000) right / 51% 100% no-repeat;
+  }
+  .stub {
+    padding: 14px; gap: 2px;
+    -webkit-mask: radial-gradient(circle var(--notch) at 0 0, #0000 98%, #000) left / 51% 100% no-repeat,
+                  radial-gradient(circle var(--notch) at 100% 0, #0000 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle var(--notch) at 0 0, #0000 98%, #000) left / 51% 100% no-repeat,
+          radial-gradient(circle var(--notch) at 100% 0, #0000 98%, #000) right / 51% 100% no-repeat;
+  }
+  .stub .big { font-size: 26px; }
+  .stub .arrow { animation: nudgeDown 1.6s infinite; font-size: 18px; }
+  @keyframes nudgeDown { 0%,100% { transform: translateY(0) } 50% { transform: translateY(5px) } }
+  /* the card underneath */
+  .card { padding: 62px 22px 30px; gap: 8px; outline-offset: -10px; }
+  .card .kicker { font-size: 24px; }
+  .card .who { font-size: 40px; }
+  .card .msg { font-size: 15px; }
+  .card-stamp { top: 16px; right: 14px; font-size: 13px; padding: 3px 7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drape, .whisper { transition-duration: .01s; transition-delay: 0s; }
+  .stub .arrow, .rays, .plaque, body::before, .namefield:not(.filled) input { animation: none; }
+  .ticket.torn .stamp { animation-duration: .01s; }
+}
+</style>
+</head>
+<body>
+<div class="intro" id="intro" role="button" tabindex="0" aria-label="Open the curtains">
+  <div class="drape l"></div>
+  <div class="drape r"></div>
+  <div class="whisper">
+    <div class="gild">
+      <span class="psst">Psst&hellip;</span>
+      <span class="line">your favourite clown is calling you</span>
+    </div>
+  </div>
+</div>
+
+<header class="poster">
+  <div class="artboard" aria-hidden="true">
+    <div class="rays"></div>
+    <div class="shade"></div>
+    <div class="plaque" id="plaque">
+      <img src="img/plaque.webp" width="1134" height="597" alt="">
+      <span class="nastya">Nastya&rsquo;s</span>
+    </div>
+  </div>
+  <h1 class="sr-only">Nastya&rsquo;s Circus</h1>
+  <p class="sr-only">There&rsquo;s no circus quite as nasty as the circus run by Nastya</p>
+</header>
+
+<main class="wrap">
+  <section class="bill" aria-label="Party details">
+    <div><span class="k">When</span><span class="v"><strong>Sat, Nov 7</strong>from 7 in the evening</span></div>
+    <div><span class="k">Where</span><span class="v"><strong>Bostanlı</strong>you know the place</span></div>
+    <div><span class="k">Dress code</span><span class="v"><strong>Costume</strong>no costume, no entry</span></div>
+    <div><span class="k">Bring</span><span class="v"><strong>A bottle</strong>of your favourite poison</span></div>
+  </section>
+
+  <section class="box" aria-label="Your ticket">
+    <p class="hint" id="hint">Write your name, then tear off the stub to say you&rsquo;re coming.</p>
+
+    <div class="stack" id="stack">
+    <div class="card" id="result" aria-live="polite">
+      <div class="card-stamp" id="card-stamp" aria-hidden="true">Admitted</div>
+      <p class="kicker caps" id="result-title">You&rsquo;re on the bill!</p>
+      <p class="who" id="result-name"></p>
+      <p class="msg" id="result-text"></p>
+      <p class="ticketno" id="result-no"></p>
+      <p class="note" id="result-note"></p>
+      <button class="linkish" id="undo" type="button">Changed your mind? Return the ticket</button>
+    </div>
+    <div class="ticket" id="ticket">
+      <div class="main">
+        <div class="strip" aria-hidden="true"></div>
+        <p class="admit">Admit One</p>
+        <div class="namefield">
+          <label for="guest-name">Your stage name</label>
+          <div class="write">
+            <input id="guest-name" maxlength="40" autocomplete="name" placeholder="e.g. The Bearded Lady" aria-describedby="needname">
+            <span class="ghost" id="ghost" aria-hidden="true"></span>
+          </div>
+          <span class="needname" id="needname" hidden>Write your name first, then tear.</span>
+        </div>
+      </div>
+      <div class="stub" id="stub" role="button" tabindex="0" aria-label="Tear off the stub to confirm you're coming">
+        <div class="big">Tear</div>
+        <div class="small">tap to rip off</div>
+        <div class="arrow" aria-hidden="true"><span class="wide">✂ ➜</span><span class="narrow">✂ ↓</span></div>
+      </div>
+    </div>
+    </div>
+
+    <button class="linkish" id="decline" type="button">Sadly, I can&rsquo;t make it</button>
+  </section>
+</main>
+
+<footer><span>Nastya&rsquo;s Circus &middot; the show goes on, rain or shine</span></footer>
+
+<script>
+// Intro: curtains stay closed for four seconds (or until tapped), then part and get out of the way.
+(() => {
+  const intro = document.getElementById("intro");
+  const root = document.documentElement;
+  root.classList.add("intro-on");
+  let opened = false;
+  const open = () => {
+    if (opened) return;
+    opened = true;
+    intro.classList.add("open");
+    root.classList.remove("intro-on");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(() => { intro.hidden = true; }, reduce ? 50 : 4300);
+  };
+  setTimeout(open, 4000);
+  intro.addEventListener("click", open);
+  intro.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+})();
+</script>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const ticket = $("ticket"), stub = $("stub"), nameInput = $("guest-name");
+  const stack = $("stack"), decline = $("decline"), mainPart = ticket.querySelector(".main");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const vertical = () => matchMedia("(max-width: 600px)").matches;
+  const LS = "nastya-circus-rsvp";
+  const HINT = "Write your name, then tear off the stub to say you’re coming.";
+
+  // Answers go to Nastya's Google Sheet through a small Apps Script web app (see rsvp-sheet.gs).
+  const RSVP_URL = "https://script.google.com/macros/s/AKfycbyqGTFCkcZcvBtJm3JO0Z82FyuZbnPIpkjz9aOjlncWYt1q-v3wmF3-z22wEzp9biok/exec";
+  const GUEST = "nastya-circus-guest";
+  let mine = null;
+  const guestId = (() => {
+    const fresh = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+    try { let g = localStorage.getItem(GUEST); if (!g) { g = fresh(); localStorage.setItem(GUEST, g); } return g; } catch { return fresh(); }
+  })();
+  async function send(payload) {
+    if (!RSVP_URL) throw new Error("RSVP_URL is not set");
+    const res = await fetch(RSVP_URL, { method: "POST", body: JSON.stringify({ id: guestId, ...payload }) });
+    const out = await res.json();
+    if (!out.ok) throw new Error(out.error || "rejected");
+  }
+
+  const lsGet = () => { try { return JSON.parse(localStorage.getItem(LS) || "null"); } catch { return null; } };
+  const lsSet = (v) => { try { v ? localStorage.setItem(LS, JSON.stringify(v)) : localStorage.removeItem(LS); } catch {} };
+
+  // ---------- rendering ----------
+  // a stable ticket number per guest, from their id
+  function serialFor() {
+    let h = 0;
+    for (const ch of guestId) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return String(h % 999 + 1).padStart(3, "0");
+  }
+
+  function renderMine() {
+    const rec = mine;
+    const yes = rec?.status === "yes";
+    if (rec?.name && document.activeElement !== nameInput) nameInput.value = rec.name;
+    nameInput.parentElement.parentElement.classList.toggle("filled", !!nameInput.value);
+    stack.classList.toggle("revealed", !!rec);
+    if (!rec) stack.classList.remove("revealing");
+    decline.hidden = !!rec; $("hint").hidden = !!rec;
+    if (!rec) return;
+    $("result-title").textContent = yes ? "You\u2019re on the bill!" : "Maybe next time";
+    $("card-stamp").textContent = yes ? "Admitted" : "Ghost seat";
+    $("result-name").textContent = rec.name || "Mysterious guest";
+    $("result-text").textContent = yes
+      ? "Your stub is with the ringmaster. See you on Saturday, November 7 from 7 PM in Bostanl\u0131, in costume and with a bottle in hand."
+      : "We\u2019ll save your seat for a ghost. If plans change, come back and grab your ticket.";
+    $("result-no").textContent = yes ? `Ticket No. ${serialFor(rec)} \u00b7 valid till sunrise` : "";
+    $("result-note").textContent = rec.local
+      ? "The ringmaster didn\u2019t get this one. Text Nastya directly to make sure your answer counts."
+      : "Saved. Nastya can see your answer.";
+    $("undo").textContent = yes ? "Changed your mind? Return the ticket" : "Actually, I\u2019m coming";
+  }
+
+  // ---------- saving ----------
+  async function save(status) {
+    mine = { name: nameInput.value.trim().slice(0, 40), status, at: Date.now() };
+    try { await send({ name: mine.name, status }); mine.local = false; }
+    catch { mine.local = true; }
+    lsSet(mine);
+    renderMine();
+  }
+
+  // put the ticket back together and drop it onto the card again
+  async function clearMine() {
+    [stub, mainPart, ticket].forEach(el => el.getAnimations().forEach(an => an.cancel()));
+    ticket.classList.remove("falling");
+    mine = null; lsSet(null);
+    nameInput.disabled = false;
+    renderMine();
+    if (!reduce) {
+      ticket.animate([
+        { transform: "translateY(-80px) rotate(-3deg)", opacity: 0 },
+        { transform: "translateY(6px) rotate(.5deg)", opacity: 1, offset: .6 },
+        { transform: "none", opacity: 1 }
+      ], { duration: 600, easing: "cubic-bezier(.3,1.4,.5,1)" });
+    }
+    send({ status: "withdrawn" }).catch(() => {});
+  }
+
+  // ---------- tearing ----------
+  function needName() {
+    if (nameInput.value.trim()) return false;
+    nameInput.focus();
+    ticket.classList.remove("shake"); void ticket.offsetWidth; ticket.classList.add("shake");
+    nameInput.parentElement.parentElement.classList.add("missing");
+    $("needname").hidden = false;
+    return true;
+  }
+
+  const fall = (el, keyframes, opts) => el.animate(keyframes, { fill: "forwards", ...opts }).finished.catch(() => {});
+
+  // tear the stub, then the rest of the ticket drops too and shows the card underneath
+  async function tear() {
+    if (mine || needName()) return;
+    nameInput.blur(); nameInput.disabled = true;
+    stack.classList.add("revealing");
+    if (reduce) return save("yes");
+    const v = vertical();
+    const r = stub.getBoundingClientRect();
+    sparkle(r.left + r.width / 2, r.top + r.height / 2);
+    ticket.classList.add("falling");
+    await Promise.all([
+      fall(stub, [
+        { transform: "none", easing: "cubic-bezier(.2,.8,.3,1)" },
+        { transform: v ? "translate(4px, 10px) rotate(9deg)" : "translate(8px, 6px) rotate(16deg)", offset: .3, easing: "ease-in-out" },
+        { transform: v ? "translate(4px, 12px) rotate(7deg)" : "translate(8px, 8px) rotate(13deg)", offset: .45, easing: "cubic-bezier(.5,0,.9,.5)" },
+        { transform: v ? "translate(30px, 70vh) rotate(28deg)" : "translate(40px, 70vh) rotate(42deg)", opacity: 1, offset: .9 },
+        { transform: v ? "translate(32px, 75vh) rotate(30deg)" : "translate(42px, 75vh) rotate(44deg)", opacity: 0 }
+      ], { duration: 1500 }),
+      fall(mainPart, [
+        { transform: "none", easing: "cubic-bezier(.3,0,.7,.3)" },
+        { transform: "translate(-6px, 6px) rotate(-2deg)", offset: .15, easing: "cubic-bezier(.5,0,.9,.5)" },
+        { transform: "translate(-40px, 80vh) rotate(-16deg)", opacity: 1, offset: .9 },
+        { transform: "translate(-44px, 85vh) rotate(-17deg)", opacity: 0 }
+      ], { duration: 1400, delay: 650 })
+    ]);
+    await save("yes");
+    sparkleAt($("card-stamp"));
+  }
+
+  // "can't make it": the whole ticket slips off the card
+  async function declineTicket() {
+    if (mine || needName()) return;
+    nameInput.blur(); nameInput.disabled = true;
+    stack.classList.add("revealing");
+    if (!reduce) {
+      ticket.classList.add("falling");
+      await fall(ticket, [
+        { transform: "none", easing: "cubic-bezier(.3,0,.7,.3)" },
+        { transform: "translateY(-10px) rotate(1deg)", offset: .15, easing: "cubic-bezier(.5,0,.9,.5)" },
+        { transform: "translate(30px, 85vh) rotate(9deg)", opacity: 0 }
+      ], { duration: 1200 });
+    }
+    save("no");
+  }
+
+  function sparkleAt(el) {
+    if (reduce) return;
+    const r = el.getBoundingClientRect();
+    sparkle(r.left + r.width / 2, r.top + r.height / 2);
+  }
+
+  // a little burst of gold stars, like picking up a coin
+  function sparkle(x, y) {
+    for (let i = 0; i < 9; i++) {
+      const el = document.createElement("span");
+      el.className = "sparkle"; el.textContent = "\u2605";
+      el.style.left = x - 13 + "px"; el.style.top = y - 13 + "px";
+      document.body.appendChild(el);
+      const a = (-90 + (i - 4) * 22) * Math.PI / 180, d = 70 + Math.random() * 60;
+      const dx = Math.cos(a) * d, dy = Math.sin(a) * d;
+      el.animate([
+        { transform: "translate(0,0) scale(.2) rotate(0)", opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) scale(1.2) rotate(${dx}deg)`, opacity: 1, offset: .45, easing: "ease-in" },
+        { transform: `translate(${dx * 1.3}px, ${dy + 140}px) scale(.6) rotate(${dx * 2}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 300, easing: "cubic-bezier(.2,.8,.4,1)" }).finished.then(() => el.remove(), () => el.remove());
+    }
+  }
+
+  const plaque = $("plaque");
+  plaque.addEventListener("click", () => {
+    plaque.classList.remove("boing"); void plaque.offsetWidth; plaque.classList.add("boing");
+  });
+
+  stub.addEventListener("click", tear);
+  stub.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tear(); }
+  });
+  nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") stub.focus(); });
+  nameInput.addEventListener("input", () => {
+    const field = nameInput.parentElement.parentElement;
+    field.classList.remove("missing"); field.classList.toggle("filled", !!nameInput.value); $("needname").hidden = true;
+  });
+
+  // the empty name line writes out circus names by itself, as a hint
+  (() => {
+    const names = ["The Bearded Lady", "Madame Zelda", "Bobo the Clown", "The Great Strongman", "Lady Lion Tamer", "The Human Cannonball", "Twinkle the Acrobat", "Señor Sword Swallower"];
+    const ghost = $("ghost");
+    if (reduce) { ghost.textContent = names[0]; return; }
+    let n = 0, i = 0, dir = 1;
+    const step = () => {
+      const word = names[n];
+      i += dir; ghost.textContent = word.slice(0, i);
+      if (dir > 0 && i >= word.length) { dir = -1; return setTimeout(step, 1600); }
+      if (dir < 0 && i <= 0) { dir = 1; n = (n + 1) % names.length; return setTimeout(step, 350); }
+      setTimeout(step, dir > 0 ? 75 + Math.random() * 60 : 28);
+    };
+    setTimeout(step, 600);
+  })();
+
+  decline.addEventListener("click", declineTicket);
+  $("undo").addEventListener("click", clearMine);
+
+  // ---------- boot ----------
+  mine = lsGet();
+  renderMine();
+
+})();
+</script>
+
+</body>
+</html>
