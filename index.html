@@ -70,7 +70,9 @@ body::after {
 }
 
 /* ---------- intro curtains ---------- */
-.intro { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100lvh; z-index: 50; overflow: hidden; cursor: pointer; }
+/* taller than any phone screen on purpose: in-app browsers and floating toolbars report odd heights,
+   and the page must never show beneath the curtains */
+.intro { position: fixed; top: 0; left: 0; width: 100%; height: calc(100vh + 240px); height: calc(100lvh + 240px); z-index: 50; overflow: hidden; cursor: pointer; }
 .drape {
   position: absolute; top: 0; bottom: 0; width: 50.5%; overflow: hidden;
   background: var(--velvet);
