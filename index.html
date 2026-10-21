@@ -119,20 +119,25 @@ body::after {
 
 /* ---------- poster: Nastya's backdrop split into layers (rays turn, sign sways) ----------
    Everything is placed on a 2000x1100 artboard with the sign centred; on phones the artboard is cropped to its middle 1200. */
-.poster { position: relative; aspect-ratio: 2000 / 1100; overflow: hidden; background: #b9504f; }
-.artboard { position: absolute; top: 0; left: 0; width: 100%; height: 100%; container-type: inline-size; }
-@media (max-width: 700px) {
-  .poster { aspect-ratio: 1200 / 1100; }
-  .artboard { width: 166.667%; left: -33.333%; }
+.poster { position: relative; height: min(55vw, 70vh); overflow: hidden; background: #b9504f; }
+/* the artboard keeps its proportions and sits centred; on wide screens the rays simply run further out */
+.artboard {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(100%, 70vh * 2000 / 1100); aspect-ratio: 2000 / 1100;
+  container-type: inline-size;
 }
-.rays {
-  position: absolute; left: -10%; top: -59.09%; width: 120%; aspect-ratio: 1;
+@media (max-width: 700px) {
+  .poster { height: auto; aspect-ratio: 1200 / 1100; }
+  .artboard { width: 166.667%; left: -33.333%; top: 0; transform: none; }
+}
+.rays { /* big enough to cover the whole poster from the sign's centre, whatever the window shape */
+  position: absolute; left: 50%; top: 45.3%; width: 150vmax; margin: -75vmax 0 0 -75vmax; aspect-ratio: 1;
   background: url("img/rays.webp") center / cover;
   animation: spin 120s linear infinite;
   will-change: transform;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.shade { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 50% 50%, transparent 45%, rgba(70,10,20,.35)); }
+.shade { position: absolute; inset: -50vmax; background: radial-gradient(ellipse 60% 70% at 50% 50%, transparent 45%, rgba(70,10,20,.35)); }
 .plaque {
   position: absolute; left: 21.6%; top: 22.86%; width: 56.7%;
   transform-origin: 50% -60%;
@@ -412,7 +417,7 @@ footer span {
     <div class="rays"></div>
     <div class="shade"></div>
     <div class="plaque" id="plaque">
-      <img src="img/plaque.webp" width="1134" height="597" alt="">
+      <img src="img/plaque-v2.webp" width="1134" height="597" alt="">
       <span class="nastya">Nastya&rsquo;s</span>
       <span class="slogan">Halloween party:<br>the nastiest show in town</span>
     </div>
@@ -526,35 +531,48 @@ footer span {
     return String(h % 999 + 1).padStart(3, "0");
   }
 
-  function renderMine() {
-    const rec = mine;
-    const yes = rec?.status === "yes";
-    if (rec?.name && document.activeElement !== nameInput) nameInput.value = rec.name;
-    nameInput.parentElement.parentElement.classList.toggle("filled", !!nameInput.value);
-    stack.classList.toggle("revealed", !!rec);
-    if (!rec) stack.classList.remove("revealing");
-    decline.hidden = !!rec; $("hint").hidden = !!rec;
-    if (!rec) return;
+  function fillCard(rec) {
+    const yes = rec.status === "yes";
     $("result-title").textContent = yes ? "Your seat is saved!" : "Maybe next time";
     $("card-stamp").textContent = yes ? "Admitted" : "Ghost seat";
     $("result-name").textContent = rec.name || "Mysterious guest";
     $("result-text").textContent = yes
       ? "Your stub is with the ringmaster and a front-row seat has your name on it. The show starts Saturday, November 7 from 7 PM in Bostanl\u0131. Come in costume, with a bottle in hand."
       : "We\u2019ll save your seat for a ghost. If plans change, come back and grab your ticket.";
-    $("result-no").textContent = yes ? `Ticket No. ${serialFor(rec)} \u00b7 valid till sunrise` : "";
-    $("result-note").textContent = rec.local
-      ? "The ringmaster didn\u2019t get this one. Text Nastya directly to make sure your answer counts."
-      : "Saved. Nastya can see your answer.";
+    $("result-no").textContent = yes ? `Ticket No. ${serialFor()} \u00b7 valid till sunrise` : "";
+    $("result-note").textContent = rec.pending
+      ? "Sending your answer to the ringmaster\u2026"
+      : rec.local
+        ? "The ringmaster didn\u2019t get this one. Text Nastya directly to make sure your answer counts."
+        : "Saved. Nastya can see your answer.";
     $("undo").textContent = yes ? "Changed your mind? Return the ticket" : "Actually, I\u2019m coming";
   }
 
+  function renderMine() {
+    const rec = mine;
+    if (rec?.name && document.activeElement !== nameInput) nameInput.value = rec.name;
+    nameInput.parentElement.parentElement.classList.toggle("filled", !!nameInput.value);
+    stack.classList.toggle("revealed", !!rec);
+    if (!rec) stack.classList.remove("revealing");
+    decline.hidden = !!rec; $("hint").hidden = !!rec;
+    if (rec) fillCard(rec);
+  }
+
   // ---------- saving ----------
-  async function save(status) {
-    mine = { name: nameInput.value.trim().slice(0, 40), status, at: Date.now() };
-    try { await send({ name: mine.name, status }); mine.local = false; }
-    catch { mine.local = true; }
-    lsSet(mine);
-    renderMine();
+  // send the answer straight away, while the ticket is still falling; the returned
+  // function shows the card once the animation is done and waits for the reply
+  function startSave(status) {
+    const rec = { name: nameInput.value.trim().slice(0, 40), status, at: Date.now(), pending: true };
+    fillCard(rec);
+    const failed = send({ name: rec.name, status }).then(() => false, () => true);
+    return async () => {
+      mine = rec;
+      renderMine();
+      rec.local = await failed;
+      delete rec.pending;
+      lsSet(mine);
+      renderMine();
+    };
   }
 
   // put the ticket back together and drop it onto the card again
@@ -591,7 +609,8 @@ footer span {
     if (mine || needName()) return;
     nameInput.blur(); nameInput.disabled = true;
     stack.classList.add("revealing");
-    if (reduce) return save("yes");
+    const finish = startSave("yes");
+    if (reduce) return finish();
     const v = vertical();
     const r = stub.getBoundingClientRect();
     sparkle(r.left + r.width / 2, r.top + r.height / 2);
@@ -611,8 +630,9 @@ footer span {
         { transform: "translate(-44px, 85vh) rotate(-17deg)", opacity: 0 }
       ], { duration: 1400, delay: 650 })
     ]);
-    await save("yes");
+    const done = finish();
     sparkleAt($("card-stamp"));
+    await done;
   }
 
   // "can't make it": the whole ticket slips off the card
@@ -620,6 +640,7 @@ footer span {
     if (mine || needName()) return;
     nameInput.blur(); nameInput.disabled = true;
     stack.classList.add("revealing");
+    const finish = startSave("no");
     if (!reduce) {
       ticket.classList.add("falling");
       await fall(ticket, [
@@ -628,7 +649,7 @@ footer span {
         { transform: "translate(30px, 85vh) rotate(9deg)", opacity: 0 }
       ], { duration: 1200 });
     }
-    save("no");
+    finish();
   }
 
   function sparkleAt(el) {
